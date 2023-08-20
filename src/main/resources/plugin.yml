@@ -1,0 +1,17 @@
+name: WorldCleanerH
+version: 0.0.1
+main: fr.formiko.worldcleanerh.WorldCleanerHPlugin
+description: Select part of the world.
+author: Hydrolien
+website: https://github.com/HydrolienF/WorldCleanerH
+api-version: '1.20'
+commands:
+   clean:
+      description: Clean item or block in a selected area.
+      usage: /clean <entities|blocks>
+      permission: worldcleanerh.clean
+dependencies:
+  server:
+    WorldSelectorH:
+      load: BEFORE
+      required: true
