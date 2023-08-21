@@ -168,19 +168,19 @@ public class CleanCommand implements CommandExecutor {
 
     enum BoatType {
         // @formatter:off
-        FARMER(new ItemStack(Material.WHEAT, 64), new ItemStack(Material.HAY_BLOCK, 64), new ItemStack(Material.CARROT, 64)),
-        ORE(new ItemStack(Material.IRON_INGOT, 40), new ItemStack(Material.COAL, 64)),
+        FARMER(new ItemStack(Material.WHEAT, 20), new ItemStack(Material.HAY_BLOCK, 5), new ItemStack(Material.CARROT, 20)),
+        ORE(new ItemStack(Material.IRON_INGOT, 12), new ItemStack(Material.COAL, 23)),
         TOOL(new ItemStack(Material.IRON_PICKAXE), new ItemStack(Material.IRON_AXE), new ItemStack(Material.IRON_SHOVEL),
                 new ItemStack(Material.IRON_HOE)),
-        EXOTIC(new ItemStack(Material.BAMBOO, 64), new ItemStack(Material.COCOA_BEANS, 10), new ItemStack(Material.SUGAR_CANE, 64),
-                new ItemStack(Material.CACTUS, 64), new ItemStack(Material.CHERRY_SAPLING, 10)),
-        RICH(new ItemStack(Material.CANDLE, 50), new ItemStack(Material.GOLD_INGOT, 64), new ItemStack(Material.GOLD_BLOCK, 10),
-                new ItemStack(Material.DIAMOND, 20)),
-        FISHER(new ItemStack(Material.SALMON, 64), new ItemStack(Material.COD, 64), new ItemStack(Material.FISHING_ROD)),
-        WOOD1(new ItemStack(Material.OAK_LOG, 64), new ItemStack(Material.SPRUCE_LOG, 64), new ItemStack(Material.BIRCH_LOG, 64),
-                new ItemStack(Material.DARK_OAK_LOG, 64), new ItemStack(Material.CHERRY_LOG, 64)),
-        WOOD2(new ItemStack(Material.JUNGLE_LOG, 64), new ItemStack(Material.ACACIA_LOG, 64), new ItemStack(Material.MANGROVE_LOG, 64)),
-        WOOL(new ItemStack(Material.WHITE_WOOL, 64), new ItemStack(Material.WHITE_CARPET, 64), new ItemStack(Material.WHITE_BED, 10));
+        EXOTIC(new ItemStack(Material.BAMBOO, 20), new ItemStack(Material.COCOA_BEANS, 20), new ItemStack(Material.SUGAR_CANE, 20),
+                new ItemStack(Material.CACTUS, 20), new ItemStack(Material.CHERRY_SAPLING, 10)),
+        RICH(new ItemStack(Material.CANDLE, 20), new ItemStack(Material.GOLD_INGOT, 10), new ItemStack(Material.GOLD_BLOCK, 3),
+                new ItemStack(Material.DIAMOND, 3)),
+        FISHER(new ItemStack(Material.SALMON, 26), new ItemStack(Material.COD, 26), new ItemStack(Material.FISHING_ROD)),
+        WOOD1(new ItemStack(Material.OAK_LOG, 32), new ItemStack(Material.SPRUCE_LOG, 32), new ItemStack(Material.BIRCH_LOG, 32),
+                new ItemStack(Material.DARK_OAK_LOG, 32), new ItemStack(Material.CHERRY_LOG, 32)),
+        WOOD2(new ItemStack(Material.JUNGLE_LOG, 32), new ItemStack(Material.ACACIA_LOG, 32), new ItemStack(Material.MANGROVE_LOG, 32)),
+        WOOL(new ItemStack(Material.WHITE_WOOL, 10), new ItemStack(Material.WHITE_CARPET, 2), new ItemStack(Material.WHITE_BED, 2));
         // MAGIC(new ItemStack(Material.BOOK, 64), enchantedBook(Enchantment.MENDING, 1), enchantedBook(Enchantment.LOOT_BONUS_BLOCKS, 3));
         // TODO add WEAPON.
         // @formatter:on
@@ -212,7 +212,7 @@ public class CleanCommand implements CommandExecutor {
         COAL(new ItemStack(Material.COAL, 64), new ItemStack(Material.COAL_BLOCK, 64)),
         IRON(new ItemStack(Material.IRON_INGOT, 64), new ItemStack(Material.IRON_BLOCK, 32)),
         GOLD(new ItemStack(Material.GOLD_INGOT, 64), new ItemStack(Material.GOLD_BLOCK, 32)),
-        DIAMOND(new ItemStack(Material.DIAMOND, 64), new ItemStack(Material.DIAMOND_BLOCK, 32)),
+        DIAMOND(new ItemStack(Material.DIAMOND, 64), new ItemStack(Material.DIAMOND_BLOCK, 16)),
         EMERALD(new ItemStack(Material.EMERALD, 64), new ItemStack(Material.EMERALD_BLOCK, 32));
         // @formatter:on
         private final ItemStack[] items;
