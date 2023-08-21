@@ -9,7 +9,7 @@ public class CleanTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
-            return List.of("items", "blocks");
+            return List.of("entities", "blocks");
         } else {
             return List.of();
         }
