@@ -27,21 +27,21 @@ import org.jetbrains.annotations.NotNull;
 
 public class CleanCommand implements CommandExecutor {
     private static final Random random = new Random();
+    private static boolean runCleanEntities = false;
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("entities")) {
                 cleanEntities(sender);
-
-                return true;
             } else if (args[0].equalsIgnoreCase("blocks")) {
                 cleanBlocks(sender);
-                return true;
             }
+        } else {
+            cleanBlocks(sender);
+            runCleanEntities = true;
         }
-        sender.sendMessage("Usage: /clean <entities|blocks>");
-        return false;
+        return true;
     }
 
     private static void cleanBlocks(CommandSender sender) {
@@ -95,6 +95,10 @@ public class CleanCommand implements CommandExecutor {
                                     (map, entry) -> map.put(entry.getKey().toString(), entry.getValue()), HashMap::putAll),
                             "boatChestLocation");
                     cancel();
+                    if (runCleanEntities) {
+                        WorldSelectorHPlugin.resetSelector();
+                        cleanEntities(sender);
+                    }
                 }
             }
         }.runTaskTimer(WorldCleanerHPlugin.plugin, 0, 1);
