@@ -3,6 +3,8 @@ package fr.formiko.worldcleanerh.commands;
 import fr.formiko.worldcleanerh.WorldCleanerHPlugin;
 import fr.formiko.worldselectorh.WorldSelectorHPlugin;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Stream;
@@ -51,8 +53,8 @@ public class CleanCommand implements CommandExecutor {
                     (map, material) -> map.put(material, 0), HashMap::putAll);
             private Map<Material, Integer> cptByMaterialToUpdate = WorldCleanerHPlugin.getBlocksToUpdate().stream().collect(HashMap::new,
                     (map, material) -> map.put(material, 0), HashMap::putAll);
-            private Map<BoatType, Integer> cptByBoatType = Stream.of(BoatType.values()).collect(HashMap::new,
-                    (map, boatType) -> map.put(boatType, 0), HashMap::putAll);
+            private Map<BoatType, List<String>> boatChestLocation = Stream.of(BoatType.values()).collect(HashMap::new,
+                    (map, boatType) -> map.put(boatType, new LinkedList<>()), HashMap::putAll);
 
 
             @Override
@@ -70,7 +72,8 @@ public class CleanCommand implements CommandExecutor {
                         cpt++;
                     } else if (block.getState() instanceof Chest chest) {
                         BoatType boatType = BoatType.randomBoatType();
-                        cptByBoatType.put(boatType, cptByBoatType.get(boatType) + 1);
+                        // cptByBoatType.put(boatType, cptByBoatType.get(boatType) + 1);
+                        boatChestLocation.get(boatType).add(block.getX() + " " + block.getY() + " " + block.getZ());
                         chest.getBlockInventory().setContents(generateBoatChestInventory(boatType));
                         cpt++;
                     }
@@ -82,10 +85,12 @@ public class CleanCommand implements CommandExecutor {
                 }
                 if (WorldSelectorHPlugin.getSelector().progress() >= 1.0) {
                     printProgress(sender, cpt);
-                    sender.sendMessage("Removed " + cpt + "/" + cptTotal + " blocks.");
+                    sender.sendMessage("Edit " + cpt + "/" + cptTotal + " blocks.");
                     sender.sendMessage("By material to remove: " + cptByMaterialToRemove);
                     sender.sendMessage("By material to update: " + cptByMaterialToUpdate);
-                    sender.sendMessage("By boat type: " + cptByBoatType);
+                    sender.sendMessage("By boat type: " + boatChestLocation.entrySet().stream()
+                            .map(e -> e.getKey() + ": " + e.getValue().size()).collect(java.util.stream.Collectors.joining(", ")));
+                    WorldCleanerHPlugin.plugin.saveData(boatChestLocation, "boatChestLocation");
                     cancel();
                 }
             }
@@ -99,8 +104,8 @@ public class CleanCommand implements CommandExecutor {
             private long printTime, execTime, cpt, cptTotal;
             private Map<EntityType, Integer> cptByEntity = WorldCleanerHPlugin.getEntitiesToRemove().stream().collect(HashMap::new,
                     (map, entity) -> map.put(entity, 0), HashMap::putAll);
-            private Map<MineshaftBarrel, Integer> cptByMineshaftBarrel = Stream.of(MineshaftBarrel.values()).collect(HashMap::new,
-                    (map, mineshaftBarrel) -> map.put(mineshaftBarrel, 0), HashMap::putAll);
+            private Map<MineshaftBarrel, List<String>> mineshaftBarrelLocation = Stream.of(MineshaftBarrel.values()).collect(HashMap::new,
+                    (map, mineshaftBarrel) -> map.put(mineshaftBarrel, new LinkedList<>()), HashMap::putAll);
 
             @Override
             public void run() {
@@ -123,7 +128,8 @@ public class CleanCommand implements CommandExecutor {
                             MineshaftBarrel mineshaftBarrel = MineshaftBarrel.randomMineshaftBarrel();
                             barrel.getInventory().setContents(generateMineshaftBarrelInventory(mineshaftBarrel));
                             cpt++;
-                            cptByMineshaftBarrel.put(mineshaftBarrel, cptByMineshaftBarrel.get(mineshaftBarrel) + 1);
+                            // cptByMineshaftBarrel.put(mineshaftBarrel, cptByMineshaftBarrel.get(mineshaftBarrel) + 1);
+                            mineshaftBarrelLocation.get(mineshaftBarrel).add(b.getX() + " " + b.getY() + " " + b.getZ());
                         }
                         cptTotal++;
                     }
@@ -133,9 +139,12 @@ public class CleanCommand implements CommandExecutor {
                     printProgress(sender, cpt);
                 }
                 if (WorldSelectorHPlugin.getSelector().progress() >= 1.0) {
-                    sender.sendMessage("Removed " + cpt + "/" + cptTotal + " entities.");
+                    sender.sendMessage("Removed or replace " + cpt + "/" + cptTotal + " entities.");
                     sender.sendMessage("By entity type: " + cptByEntity);
-                    sender.sendMessage("By mineshaft barrel: " + cptByMineshaftBarrel);
+                    // sender.sendMessage("By mineshaft barrel: " + cptByMineshaftBarrel);
+                    sender.sendMessage("By mineshaft barrel location: " + mineshaftBarrelLocation.entrySet().stream()
+                            .map(e -> e.getKey() + ": " + e.getValue().size()).collect(java.util.stream.Collectors.joining(", ")));
+                    WorldCleanerHPlugin.plugin.saveData(mineshaftBarrelLocation, "mineshaftBarrelLocation");
                     cancel();
                 }
             }

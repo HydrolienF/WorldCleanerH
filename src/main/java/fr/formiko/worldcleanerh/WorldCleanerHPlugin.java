@@ -2,9 +2,12 @@ package fr.formiko.worldcleanerh;
 
 import fr.formiko.worldcleanerh.commands.CleanCommand;
 import fr.formiko.worldcleanerh.commands.CleanTabCompleter;
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,4 +29,19 @@ public class WorldCleanerHPlugin extends JavaPlugin {
     public static Collection<Material> getBlocksToRemove() { return blocksToRemove; }
     public static Collection<Material> getBlocksToUpdate() { return blocksToUpdate; }
 
+
+    public boolean saveData(Map dataToSave, String name) {
+        File dataFile = new File("plugins/WorldCleanerH/" + name + ".yml");
+        File parentFile = dataFile.getParentFile();
+        parentFile.mkdirs();
+        YamlConfiguration data = YamlConfiguration.loadConfiguration(dataFile);
+        try {
+            data.set(name, dataToSave);
+            data.save(dataFile);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

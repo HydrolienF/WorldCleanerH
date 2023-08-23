@@ -6,10 +6,10 @@ author: Hydrolien
 website: https://github.com/HydrolienF/WorldCleanerH
 api-version: '1.20'
 commands:
-   clean:
-      description: Clean item or block in a selected area.
-      usage: /clean <entities|blocks>
-      permission: worldcleanerh.clean
+  clean:
+    description: Clean item or block in a selected area.
+    usage: /clean <entities|blocks>
+    permission: worldcleanerh.clean
 dependencies:
   server:
     WorldSelectorH:
