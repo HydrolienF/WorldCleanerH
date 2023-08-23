@@ -90,7 +90,10 @@ public class CleanCommand implements CommandExecutor {
                     sender.sendMessage("By material to update: " + cptByMaterialToUpdate);
                     sender.sendMessage("By boat type: " + boatChestLocation.entrySet().stream()
                             .map(e -> e.getKey() + ": " + e.getValue().size()).collect(java.util.stream.Collectors.joining(", ")));
-                    WorldCleanerHPlugin.plugin.saveData(boatChestLocation, "boatChestLocation");
+                    WorldCleanerHPlugin.plugin.saveData(
+                            boatChestLocation.entrySet().stream().collect(HashMap::new,
+                                    (map, entry) -> map.put(entry.getKey().toString(), entry.getValue()), HashMap::putAll),
+                            "boatChestLocation");
                     cancel();
                 }
             }
@@ -144,7 +147,10 @@ public class CleanCommand implements CommandExecutor {
                     // sender.sendMessage("By mineshaft barrel: " + cptByMineshaftBarrel);
                     sender.sendMessage("By mineshaft barrel location: " + mineshaftBarrelLocation.entrySet().stream()
                             .map(e -> e.getKey() + ": " + e.getValue().size()).collect(java.util.stream.Collectors.joining(", ")));
-                    WorldCleanerHPlugin.plugin.saveData(mineshaftBarrelLocation, "mineshaftBarrelLocation");
+                    WorldCleanerHPlugin.plugin.saveData(
+                            mineshaftBarrelLocation.entrySet().stream().collect(HashMap::new,
+                                    (map, entry) -> map.put(entry.getKey().toString(), entry.getValue()), HashMap::putAll),
+                            "mineshaftBarrelLocation");
                     cancel();
                 }
             }
@@ -218,11 +224,11 @@ public class CleanCommand implements CommandExecutor {
     }
     enum MineshaftBarrel {
         // @formatter:off
-        COAL(new ItemStack(Material.COAL, 64), new ItemStack(Material.COAL_BLOCK, 64)),
-        IRON(new ItemStack(Material.IRON_INGOT, 64), new ItemStack(Material.IRON_BLOCK, 32)),
-        GOLD(new ItemStack(Material.GOLD_INGOT, 64), new ItemStack(Material.GOLD_BLOCK, 32)),
-        DIAMOND(new ItemStack(Material.DIAMOND, 64), new ItemStack(Material.DIAMOND_BLOCK, 16)),
-        EMERALD(new ItemStack(Material.EMERALD, 64), new ItemStack(Material.EMERALD_BLOCK, 32));
+        COAL(new ItemStack(Material.COAL, 64), new ItemStack(Material.COAL_BLOCK, 32)),
+        IRON(new ItemStack(Material.IRON_INGOT, 48), new ItemStack(Material.IRON_BLOCK, 16)),
+        GOLD(new ItemStack(Material.GOLD_INGOT, 32), new ItemStack(Material.GOLD_BLOCK, 16)),
+        DIAMOND(new ItemStack(Material.DIAMOND, 32), new ItemStack(Material.DIAMOND_BLOCK, 8)),
+        EMERALD(new ItemStack(Material.EMERALD, 32), new ItemStack(Material.EMERALD_BLOCK, 16));
         // @formatter:on
         private final ItemStack[] items;
 
