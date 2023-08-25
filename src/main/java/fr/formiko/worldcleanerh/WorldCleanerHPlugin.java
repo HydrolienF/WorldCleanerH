@@ -16,6 +16,9 @@ public class WorldCleanerHPlugin extends JavaPlugin {
     private static Collection<EntityType> entitiesToRemove = List.of(EntityType.DROPPED_ITEM, EntityType.VILLAGER);
     private static Collection<Material> blocksToRemove = List.of(Material.SPAWNER, Material.RAIL);
     private static Collection<Material> blocksToUpdate = List.of(); // List.of(Material.WATER, Material.LAVA);
+    private static Collection<Material> blocksToSupport = List.of(Material.SAND, Material.RED_SAND, Material.GRAVEL);
+    private static Map<Material, Material> supportBlocks = Map.of(Material.SAND, Material.SANDSTONE, Material.RED_SAND,
+            Material.RED_SANDSTONE, Material.GRAVEL, Material.ANDESITE);
     public static WorldCleanerHPlugin plugin;
     public static final Random random = new Random();
 
@@ -30,6 +33,8 @@ public class WorldCleanerHPlugin extends JavaPlugin {
     public static Collection<EntityType> getEntitiesToRemove() { return entitiesToRemove; }
     public static Collection<Material> getBlocksToRemove() { return blocksToRemove; }
     public static Collection<Material> getBlocksToUpdate() { return blocksToUpdate; }
+    public static Collection<Material> getBlocksToSupport() { return blocksToSupport; }
+    public static Material getSupportBlock(Material block) { return supportBlocks.get(block); }
 
 
     public boolean saveData(Map dataToSave, String name) {

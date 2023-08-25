@@ -14,6 +14,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -60,7 +61,7 @@ public class CleanCommand implements CommandExecutor {
             @Override
             public void run() {
                 execTime = System.currentTimeMillis();
-                while (execTime + 50 > System.currentTimeMillis() && WorldSelectorHPlugin.getSelector().hasNextBlock()) {
+                while (execTime + 45 > System.currentTimeMillis() && WorldSelectorHPlugin.getSelector().hasNextBlock()) {
                     Block block = WorldSelectorHPlugin.getSelector().nextBlock();
                     if (WorldCleanerHPlugin.getBlocksToRemove().contains(block.getType())) {
                         cptByMaterialToRemove.put(block.getType(), cptByMaterialToRemove.get(block.getType()) + 1);
@@ -72,9 +73,20 @@ public class CleanCommand implements CommandExecutor {
                         cpt++;
                     } else if (block.getState() instanceof Chest chest) {
                         BoatType boatType = BoatType.randomBoatType();
-                        // cptByBoatType.put(boatType, cptByBoatType.get(boatType) + 1);
                         boatChestLocation.get(boatType).add(block.getX() + " " + block.getY() + " " + block.getZ());
                         chest.getBlockInventory().setContents(generateBoatChestInventory(boatType));
+                        cpt++;
+                    } else if (WorldCleanerHPlugin.getBlocksToSupport().contains(block.getType())
+                            && block.getRelative(BlockFace.DOWN).getType() == Material.AIR) { // no floating block
+                        block.getRelative(BlockFace.DOWN).setType(WorldCleanerHPlugin.getSupportBlock(block.getType()));
+                        cpt++;
+                    } else if (block.getType() == Material.WATER && block.getY() > 30) { // no watter flowing in surface
+                        for (Block b : List.of(block.getRelative(BlockFace.NORTH), block.getRelative(BlockFace.SOUTH),
+                                block.getRelative(BlockFace.EAST), block.getRelative(BlockFace.WEST))) {
+                            if (b.getType() == Material.AIR && b.getRelative(BlockFace.DOWN).getType() != Material.WATER) {
+                                b.setType(Material.GRASS_BLOCK);
+                            }
+                        }
                         cpt++;
                     }
                     cptTotal++;
@@ -119,7 +131,7 @@ public class CleanCommand implements CommandExecutor {
             @Override
             public void run() {
                 execTime = System.currentTimeMillis();
-                while (execTime + 50 > System.currentTimeMillis() && WorldSelectorHPlugin.getSelector().hasNextBlock()) {
+                while (execTime + 45 > System.currentTimeMillis() && WorldSelectorHPlugin.getSelector().hasNextBlock()) {
                     Chunk chunk = WorldSelectorHPlugin.getSelector().nextChunk();
                     for (Entity entity : chunk.getEntities()) {
                         if (WorldCleanerHPlugin.getEntitiesToRemove().contains(entity.getType())) {
