@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
@@ -14,8 +15,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class WorldCleanerHPlugin extends JavaPlugin {
     private static Collection<EntityType> entitiesToRemove = List.of(EntityType.DROPPED_ITEM, EntityType.VILLAGER);
     private static Collection<Material> blocksToRemove = List.of(Material.SPAWNER, Material.RAIL);
-    private static Collection<Material> blocksToUpdate = List.of(Material.WATER, Material.LAVA);
+    private static Collection<Material> blocksToUpdate = List.of(); // List.of(Material.WATER, Material.LAVA);
     public static WorldCleanerHPlugin plugin;
+    public static final Random random = new Random();
 
     @Override
     public void onEnable() {

@@ -1,12 +1,14 @@
 package fr.formiko.worldcleanerh.commands;
 
+import fr.formiko.worldcleanerh.BoatType;
+import fr.formiko.worldcleanerh.MineshaftBarrel;
 import fr.formiko.worldcleanerh.WorldCleanerHPlugin;
 import fr.formiko.worldselectorh.WorldSelectorHPlugin;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Stream;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -16,17 +18,14 @@ import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 public class CleanCommand implements CommandExecutor {
-    private static final Random random = new Random();
     private static boolean runCleanEntities = false;
 
     @Override
@@ -46,6 +45,7 @@ public class CleanCommand implements CommandExecutor {
 
     private static void cleanBlocks(CommandSender sender) {
         sender.sendMessage("Cleaning blocks...");
+        final long startTime = System.currentTimeMillis();
 
         new BukkitRunnable() {
             private long printTime, execTime, cpt, cptTotal;
@@ -81,11 +81,12 @@ public class CleanCommand implements CommandExecutor {
                 }
                 if (printTime + 1000 < System.currentTimeMillis()) {
                     printTime = System.currentTimeMillis();
-                    printProgress(sender, cpt);
+                    printProgress(sender, cpt, startTime);
                 }
                 if (WorldSelectorHPlugin.getSelector().progress() >= 1.0) {
-                    printProgress(sender, cpt);
-                    sender.sendMessage("Edit " + cpt + "/" + cptTotal + " blocks.");
+                    printProgress(sender, cpt, startTime);
+                    sender.sendMessage(
+                            "Edit " + cpt + "/" + cptTotal + " blocks. in " + Duration.ofMillis(System.currentTimeMillis() - startTime));
                     sender.sendMessage("By material to remove: " + cptByMaterialToRemove);
                     sender.sendMessage("By material to update: " + cptByMaterialToUpdate);
                     sender.sendMessage("By boat type: " + boatChestLocation.entrySet().stream()
@@ -106,6 +107,7 @@ public class CleanCommand implements CommandExecutor {
 
     private static void cleanEntities(CommandSender sender) {
         sender.sendMessage("Cleaning entities...");
+        final long startTime = System.currentTimeMillis();
 
         new BukkitRunnable() {
             private long printTime, execTime, cpt, cptTotal;
@@ -143,10 +145,11 @@ public class CleanCommand implements CommandExecutor {
                 }
                 if (printTime + 1000 < System.currentTimeMillis()) {
                     printTime = System.currentTimeMillis();
-                    printProgress(sender, cpt);
+                    printProgress(sender, cpt, startTime);
                 }
                 if (WorldSelectorHPlugin.getSelector().progress() >= 1.0) {
-                    sender.sendMessage("Removed or replace " + cpt + "/" + cptTotal + " entities.");
+                    sender.sendMessage("Removed or replace " + cpt + "/" + cptTotal + " entities in "
+                            + Duration.ofMillis(System.currentTimeMillis() - startTime));
                     sender.sendMessage("By entity type: " + cptByEntity);
                     // sender.sendMessage("By mineshaft barrel: " + cptByMineshaftBarrel);
                     sender.sendMessage("By mineshaft barrel location: " + mineshaftBarrelLocation.entrySet().stream()
@@ -161,14 +164,17 @@ public class CleanCommand implements CommandExecutor {
         }.runTaskTimer(WorldCleanerHPlugin.plugin, 0, 1);
     }
 
-    private static void printProgress(CommandSender sender, long cpt) {
-        sender.sendMessage("Progress: " + cpt + "   " + WorldSelectorHPlugin.getSelector().progress() * 100 + "%");
+    private static void printProgress(CommandSender sender, long cpt, long startTime) {
+        double progress = WorldSelectorHPlugin.getSelector().progress();
+        long timeForFullProgress = (long) ((System.currentTimeMillis() - startTime) / progress);
+        long timeForFullProgressLeft = timeForFullProgress - (long) (System.currentTimeMillis() - startTime);
+        sender.sendMessage("Progress: " + cpt + "   " + progress * 100 + "% ETA: " + Duration.ofMillis(timeForFullProgressLeft));
     }
 
     private static ItemStack @NotNull [] generateBoatChestInventory(BoatType boatType) {
         ItemStack[] items = new ItemStack[27];
         for (int i = 0; i < 27; i++) {
-            if (random.nextDouble() < 0.4) {
+            if (WorldCleanerHPlugin.random.nextDouble() < 0.4) {
                 items[i] = boatType.getRandomItem();
             }
         }
@@ -177,75 +183,10 @@ public class CleanCommand implements CommandExecutor {
     private static ItemStack @NotNull [] generateMineshaftBarrelInventory(MineshaftBarrel mineshaftBarrel) {
         ItemStack[] items = new ItemStack[27];
         for (int i = 0; i < 27; i++) {
-            if (random.nextDouble() < 0.4) {
+            if (WorldCleanerHPlugin.random.nextDouble() < 0.4) {
                 items[i] = mineshaftBarrel.getRandomItem();
             }
         }
         return items;
-    }
-
-
-    enum BoatType {
-        // @formatter:off
-        FARMER(new ItemStack(Material.WHEAT, 20), new ItemStack(Material.HAY_BLOCK, 5), new ItemStack(Material.CARROT, 20)),
-        ORE(new ItemStack(Material.IRON_INGOT, 12), new ItemStack(Material.COAL, 23)),
-        TOOL(new ItemStack(Material.IRON_PICKAXE), new ItemStack(Material.IRON_AXE), new ItemStack(Material.IRON_SHOVEL),
-                new ItemStack(Material.IRON_HOE)),
-        EXOTIC(new ItemStack(Material.BAMBOO, 20), new ItemStack(Material.COCOA_BEANS, 20), new ItemStack(Material.SUGAR_CANE, 20),
-                new ItemStack(Material.CACTUS, 20), new ItemStack(Material.CHERRY_SAPLING, 10)),
-        RICH(new ItemStack(Material.CANDLE, 20), new ItemStack(Material.GOLD_INGOT, 10), new ItemStack(Material.GOLD_BLOCK, 3),
-                new ItemStack(Material.DIAMOND, 3)),
-        FISHER(new ItemStack(Material.SALMON, 26), new ItemStack(Material.COD, 26), new ItemStack(Material.FISHING_ROD)),
-        WOOD1(new ItemStack(Material.OAK_LOG, 32), new ItemStack(Material.SPRUCE_LOG, 32), new ItemStack(Material.BIRCH_LOG, 32),
-                new ItemStack(Material.DARK_OAK_LOG, 32), new ItemStack(Material.CHERRY_LOG, 32)),
-        WOOD2(new ItemStack(Material.JUNGLE_LOG, 32), new ItemStack(Material.ACACIA_LOG, 32), new ItemStack(Material.MANGROVE_LOG, 32)),
-        WOOL(new ItemStack(Material.WHITE_WOOL, 10), new ItemStack(Material.WHITE_CARPET, 2), new ItemStack(Material.WHITE_BED, 2));
-        // MAGIC(new ItemStack(Material.BOOK, 64), enchantedBook(Enchantment.MENDING, 1), enchantedBook(Enchantment.LOOT_BONUS_BLOCKS, 3));
-        // TODO add WEAPON.
-        // @formatter:on
-        private final ItemStack[] items;
-
-        private BoatType(ItemStack... items) { this.items = items; }
-
-
-        public static BoatType randomBoatType() {
-            BoatType[] directions = values();
-            return directions[random.nextInt(directions.length)];
-        }
-
-        public ItemStack getRandomItem() {
-            ItemStack item = items[random.nextInt(items.length)];
-            return new ItemStack(item.getType(), 1 + random.nextInt(item.getAmount()));
-        }
-
-        private static ItemStack enchantedBook(Enchantment enchantment, int level) {
-            ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
-            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
-            meta.addStoredEnchant(enchantment, level, true);
-            item.setItemMeta(meta);
-            return item;
-        }
-    }
-    enum MineshaftBarrel {
-        // @formatter:off
-        COAL(new ItemStack(Material.COAL, 64), new ItemStack(Material.COAL_BLOCK, 32)),
-        IRON(new ItemStack(Material.IRON_INGOT, 48), new ItemStack(Material.IRON_BLOCK, 16)),
-        GOLD(new ItemStack(Material.GOLD_INGOT, 32), new ItemStack(Material.GOLD_BLOCK, 16)),
-        DIAMOND(new ItemStack(Material.DIAMOND, 32), new ItemStack(Material.DIAMOND_BLOCK, 8)),
-        EMERALD(new ItemStack(Material.EMERALD, 32), new ItemStack(Material.EMERALD_BLOCK, 16));
-        // @formatter:on
-        private final ItemStack[] items;
-
-        private MineshaftBarrel(ItemStack... items) { this.items = items; }
-
-        public static MineshaftBarrel randomMineshaftBarrel() {
-            MineshaftBarrel[] directions = values();
-            return directions[random.nextInt(directions.length)];
-        }
-
-        public ItemStack getRandomItem() {
-            ItemStack item = items[random.nextInt(items.length)];
-            return new ItemStack(item.getType(), 1 + random.nextInt(item.getAmount()));
-        }
     }
 }
