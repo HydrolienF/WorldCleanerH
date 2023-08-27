@@ -62,34 +62,43 @@ public class CleanCommand implements CommandExecutor {
             public void run() {
                 execTime = System.currentTimeMillis();
                 while (execTime + 45 > System.currentTimeMillis() && WorldSelectorHPlugin.getSelector().hasNextBlock()) {
-                    Block block = WorldSelectorHPlugin.getSelector().nextBlock();
-                    if (WorldCleanerHPlugin.getBlocksToRemove().contains(block.getType())) {
-                        cptByMaterialToRemove.put(block.getType(), cptByMaterialToRemove.get(block.getType()) + 1);
-                        block.setType(Material.AIR);
-                        cpt++;
-                    } else if (WorldCleanerHPlugin.getBlocksToUpdate().contains(block.getType())) {
-                        cptByMaterialToUpdate.put(block.getType(), cptByMaterialToUpdate.get(block.getType()) + 1);
-                        block.getState().update(true);
-                        cpt++;
-                    } else if (block.getState() instanceof Chest chest) {
-                        BoatType boatType = BoatType.randomBoatType();
-                        boatChestLocation.get(boatType).add(block.getX() + " " + block.getY() + " " + block.getZ());
-                        chest.getBlockInventory().setContents(generateBoatChestInventory(boatType));
-                        cpt++;
-                    } else if (WorldCleanerHPlugin.getBlocksToSupport().contains(block.getType())
-                            && block.getRelative(BlockFace.DOWN).getType() == Material.AIR) { // no floating block
-                        block.getRelative(BlockFace.DOWN).setType(WorldCleanerHPlugin.getSupportBlock(block.getType()));
-                        cpt++;
-                    } else if (block.getType() == Material.WATER && block.getY() >= 55) { // no watter flowing in surface
-                        for (Block b : List.of(block.getRelative(BlockFace.NORTH), block.getRelative(BlockFace.SOUTH),
-                                block.getRelative(BlockFace.EAST), block.getRelative(BlockFace.WEST))) {
-                            if (b.getType() == Material.AIR && b.getRelative(BlockFace.DOWN).getType() != Material.WATER) {
-                                b.setType(Material.GRASS_BLOCK);
+                    Chunk chunk = WorldSelectorHPlugin.getSelector().nextChunk();
+                    for (int x = 0; x < 16; x++) {
+                        for (int z = 0; z < 16; z++) {
+                            for (int y = -64; y < 256; y++) { // maybe 256 is not needed and 150 will be enough to clean world.
+                                Block block = chunk.getBlock(x, y, z);
+
+                                // Block block = WorldSelectorHPlugin.getSelector().nextBlock();
+                                if (WorldCleanerHPlugin.getBlocksToRemove().contains(block.getType())) {
+                                    cptByMaterialToRemove.put(block.getType(), cptByMaterialToRemove.get(block.getType()) + 1);
+                                    block.setType(Material.AIR);
+                                    cpt++;
+                                } else if (WorldCleanerHPlugin.getBlocksToUpdate().contains(block.getType())) {
+                                    cptByMaterialToUpdate.put(block.getType(), cptByMaterialToUpdate.get(block.getType()) + 1);
+                                    block.getState().update(true);
+                                    cpt++;
+                                } else if (block.getState() instanceof Chest chest) {
+                                    BoatType boatType = BoatType.randomBoatType();
+                                    boatChestLocation.get(boatType).add(block.getX() + " " + block.getY() + " " + block.getZ());
+                                    chest.getBlockInventory().setContents(generateBoatChestInventory(boatType));
+                                    cpt++;
+                                } else if (WorldCleanerHPlugin.getBlocksToSupport().contains(block.getType())
+                                        && block.getRelative(BlockFace.DOWN).getType() == Material.AIR) { // no floating block
+                                    block.getRelative(BlockFace.DOWN).setType(WorldCleanerHPlugin.getSupportBlock(block.getType()));
+                                    cpt++;
+                                } else if (block.getType() == Material.WATER && block.getY() >= 55) { // no watter flowing in surface
+                                    for (Block b : List.of(block.getRelative(BlockFace.NORTH), block.getRelative(BlockFace.SOUTH),
+                                            block.getRelative(BlockFace.EAST), block.getRelative(BlockFace.WEST))) {
+                                        if (b.getType() == Material.AIR && b.getRelative(BlockFace.DOWN).getType() != Material.WATER) {
+                                            b.setType(Material.GRASS_BLOCK);
+                                        }
+                                    }
+                                    cpt++;
+                                }
+                                cptTotal++;
                             }
                         }
-                        cpt++;
                     }
-                    cptTotal++;
                 }
                 if (printTime + 1000 < System.currentTimeMillis()) {
                     printTime = System.currentTimeMillis();
