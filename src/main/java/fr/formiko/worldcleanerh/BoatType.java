@@ -10,7 +10,7 @@ public enum BoatType {
         TOOL(new ItemStack(Material.IRON_PICKAXE), new ItemStack(Material.IRON_AXE), new ItemStack(Material.IRON_SHOVEL),
                 new ItemStack(Material.IRON_HOE)),
         EXOTIC(new ItemStack(Material.BAMBOO, 20), new ItemStack(Material.COCOA_BEANS, 20), new ItemStack(Material.SUGAR_CANE, 20),
-                new ItemStack(Material.CACTUS, 20), new ItemStack(Material.CHERRY_SAPLING, 10)),
+                new ItemStack(Material.CACTUS, 20), new ItemStack(Material.CHERRY_SAPLING, 10), new ItemStack(Material.MANGROVE_PROPAGULE, 10)),
         RICH(new ItemStack(Material.CANDLE, 20), new ItemStack(Material.GOLD_INGOT, 10), new ItemStack(Material.GOLD_BLOCK, 3),
                 new ItemStack(Material.DIAMOND, 3)),
         FISHER(new ItemStack(Material.SALMON, 26), new ItemStack(Material.COD, 26), new ItemStack(Material.FISHING_ROD)),
