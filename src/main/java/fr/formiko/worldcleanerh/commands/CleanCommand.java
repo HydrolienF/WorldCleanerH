@@ -65,7 +65,7 @@ public class CleanCommand implements CommandExecutor {
                     Chunk chunk = WorldSelectorHPlugin.getSelector().nextChunk();
                     for (int x = 0; x < 16; x++) {
                         for (int z = 0; z < 16; z++) {
-                            for (int y = -64; y < 256; y++) { // maybe 256 is not needed and 150 will be enough to clean world.
+                            for (int y = -64; y < 120; y++) { // 256 is not needed and 120 will be enough to clean world.
                                 Block block = chunk.getBlock(x, y, z);
 
                                 // Block block = WorldSelectorHPlugin.getSelector().nextBlock();
