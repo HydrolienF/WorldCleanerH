@@ -15,3 +15,6 @@ dependencies:
     WorldSelectorH:
       load: BEFORE
       required: true
+    MvndiEquipment:
+      load: BEFORE
+      required: true

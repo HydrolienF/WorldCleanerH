@@ -79,12 +79,12 @@ public class CleanCommand implements CommandExecutor {
                                     chest.getBlockInventory().setContents(generateBoatChestInventory(boatType));
                                     cpt++;
                                 } else if (WorldCleanerHPlugin.getBlocksToSupport().contains(block.getType())
-                                && block.getRelative(BlockFace.DOWN).getType() == Material.AIR) { // no floating block
+                                        && block.getRelative(BlockFace.DOWN).getType() == Material.AIR) { // no floating block
                                     block.getRelative(BlockFace.DOWN).setType(WorldCleanerHPlugin.getSupportBlock(block.getType()));
                                     cpt++;
                                 } else if (block.getType() == Material.WATER && block.getY() >= 55) { // no watter flowing in surface
                                     for (Block b : List.of(block.getRelative(BlockFace.NORTH), block.getRelative(BlockFace.SOUTH),
-                                    block.getRelative(BlockFace.EAST), block.getRelative(BlockFace.WEST))) {
+                                            block.getRelative(BlockFace.EAST), block.getRelative(BlockFace.WEST))) {
                                         if (b.getType() == Material.AIR && b.getRelative(BlockFace.DOWN).getType() != Material.WATER) {
                                             b.setType(Material.GRASS_BLOCK);
                                         }
