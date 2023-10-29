@@ -82,15 +82,18 @@ public class CleanCommand implements CommandExecutor {
                                         && block.getRelative(BlockFace.DOWN).getType() == Material.AIR) { // no floating block
                                     block.getRelative(BlockFace.DOWN).setType(WorldCleanerHPlugin.getSupportBlock(block.getType()));
                                     cpt++;
-                                } else if (block.getType() == Material.WATER && block.getY() >= 55) { // no watter flowing in surface
-                                    for (Block b : List.of(block.getRelative(BlockFace.NORTH), block.getRelative(BlockFace.SOUTH),
-                                            block.getRelative(BlockFace.EAST), block.getRelative(BlockFace.WEST))) {
-                                        if (b.getType() == Material.AIR && b.getRelative(BlockFace.DOWN).getType() != Material.WATER) {
-                                            b.setType(Material.GRASS_BLOCK);
-                                        }
-                                    }
-                                    cpt++;
                                 }
+                                // TODO fix grass block placement if we still need it on the new map.
+                                // We need to concider as air grass and flowers.
+                                // We need to concider as watter any block containing watter (as seaweed)
+                                // } else if (block.getType() == Material.WATER && block.getY() >= 55) { // no watter flowing in surface
+                                // for (Block b : List.of(block.getRelative(BlockFace.NORTH), block.getRelative(BlockFace.SOUTH),
+                                // block.getRelative(BlockFace.EAST), block.getRelative(BlockFace.WEST))) {
+                                // if (b.getType() == Material.AIR && b.getRelative(BlockFace.DOWN).getType() != Material.WATER) {
+                                // b.setType(Material.GRASS_BLOCK);
+                                // }
+                                // }
+                                // cpt++;
                                 if (WorldCleanerHPlugin.getBlocksToUpdate().contains(block.getType())) {
                                     cptByMaterialToUpdate.put(block.getType(), cptByMaterialToUpdate.get(block.getType()) + 1);
                                     block.getState().update(true);
