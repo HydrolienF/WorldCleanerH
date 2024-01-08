@@ -16,6 +16,8 @@ import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
+import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -49,11 +51,13 @@ public class CleanCommand implements CommandExecutor {
         final long startTime = System.currentTimeMillis();
 
         new BukkitRunnable() {
-            private long printTime, execTime, cpt, cptTotal;
+            private long printTime, execTime, cpt, cptTotal, cptBlockAddedToAvoidFlooding, cptBlockRemovedToAvoidFlooding;
             private Map<Material, Integer> cptByMaterialToRemove = WorldCleanerHPlugin.getBlocksToRemove().stream().collect(HashMap::new,
                     (map, material) -> map.put(material, 0), HashMap::putAll);
             private Map<Material, Integer> cptByMaterialToUpdate = WorldCleanerHPlugin.getBlocksToUpdate().stream().collect(HashMap::new,
                     (map, material) -> map.put(material, 0), HashMap::putAll);
+            private Map<Material, Integer> cptByMaterialThatCantFly = WorldCleanerHPlugin.getBlocksThatCantFly().stream()
+                    .collect(HashMap::new, (map, material) -> map.put(material, 0), HashMap::putAll);
             private Map<BoatType, List<String>> boatChestLocation = Stream.of(BoatType.values()).collect(HashMap::new,
                     (map, boatType) -> map.put(boatType, new LinkedList<>()), HashMap::putAll);
 
@@ -82,23 +86,62 @@ public class CleanCommand implements CommandExecutor {
                                         && block.getRelative(BlockFace.DOWN).getType() == Material.AIR) { // no floating block
                                     block.getRelative(BlockFace.DOWN).setType(WorldCleanerHPlugin.getSupportBlock(block.getType()));
                                     cpt++;
-                                }
-                                // TODO fix grass block placement if we still need it on the new map.
-                                // We need to concider as air grass and flowers.
-                                // We need to concider as watter any block containing watter (as seaweed)
-                                // } else if (block.getType() == Material.WATER && block.getY() >= 55) { // no watter flowing in surface
-                                // for (Block b : List.of(block.getRelative(BlockFace.NORTH), block.getRelative(BlockFace.SOUTH),
-                                // block.getRelative(BlockFace.EAST), block.getRelative(BlockFace.WEST))) {
-                                // if (b.getType() == Material.AIR && b.getRelative(BlockFace.DOWN).getType() != Material.WATER) {
-                                // b.setType(Material.GRASS_BLOCK);
-                                // }
-                                // }
-                                // cpt++;
-                                if (WorldCleanerHPlugin.getBlocksToUpdate().contains(block.getType())) {
-                                    cptByMaterialToUpdate.put(block.getType(), cptByMaterialToUpdate.get(block.getType()) + 1);
-                                    block.getState().update(true);
+                                } else if (isUnstableBlock(block)) {
+                                    cptByMaterialThatCantFly.put(block.getType(), cptByMaterialThatCantFly.get(block.getType()) + 1);
+                                    block.setType(Material.AIR);
                                     cpt++;
+                                    // If it's a water source block, check if it have some neighbor that can be flooded.
+                                } else if (block.getY() >= 60 && isFloodingBlock(block)) {
+                                    // Remove lonely water source block that will flood
+                                    int cptWater = 0;
+                                    int cptAir = 0;
+                                    for (Block neighborToWaterBlock : List.of(block.getRelative(BlockFace.NORTH),
+                                            block.getRelative(BlockFace.SOUTH), block.getRelative(BlockFace.EAST),
+                                            block.getRelative(BlockFace.WEST), block.getRelative(BlockFace.SOUTH_WEST),
+                                            block.getRelative(BlockFace.SOUTH_EAST), block.getRelative(BlockFace.NORTH_WEST),
+                                            block.getRelative(BlockFace.NORTH_EAST), block.getRelative(BlockFace.DOWN))) {
+                                        if (isWaterSource(neighborToWaterBlock)) {
+                                            cptWater++;
+                                        } else if (isFloodableBlock(neighborToWaterBlock)) {
+                                            // && !neighborToWaterBlock.getRelative(BlockFace.DOWN).isLiquid()
+                                            cptAir++;
+                                        }
+                                    }
+                                    // If there is a lot of floodable block compare to water source block, remove the water source block.
+                                    if (cptAir > cptWater) { // && cptWater < 4
+                                        block.setType(Material.AIR);
+                                        cpt++;
+                                        cptBlockRemovedToAvoidFlooding++;
+                                    } else { // else replace floodable block with the block under it.
+                                        // Some flooding might already occured.
+                                        // Some flooding won't be previsible untill water update.
+                                        for (Block neighborToWaterBlock : List.of(block.getRelative(BlockFace.NORTH),
+                                                block.getRelative(BlockFace.SOUTH), block.getRelative(BlockFace.EAST),
+                                                block.getRelative(BlockFace.WEST), block.getRelative(BlockFace.SOUTH_WEST),
+                                                block.getRelative(BlockFace.SOUTH_EAST), block.getRelative(BlockFace.NORTH_WEST),
+                                                block.getRelative(BlockFace.NORTH_EAST))) {
+                                            // if neighbor can be flooded and it have a solid block under it,
+                                            // replace it with the block under it to avoid flooding
+                                            // (if the block under it will prevent flooding).
+                                            Block lowerBlock = neighborToWaterBlock.getRelative(BlockFace.DOWN);
+                                            if (isFloodableBlock(neighborToWaterBlock)
+                                                    && (lowerBlock.isSolid() || lowerBlock.getRelative(BlockFace.DOWN).isSolid())) {
+                                                neighborToWaterBlock.setType(lowerBlock.getType());
+                                                if (lowerBlock.getType() == Material.GRASS_BLOCK
+                                                        || lowerBlock.getType() == Material.FARMLAND) {
+                                                    lowerBlock.setType(Material.DIRT);
+                                                }
+                                                cpt++;
+                                                cptBlockAddedToAvoidFlooding++;
+                                            }
+                                        }
+                                    }
                                 }
+                                // if (WorldCleanerHPlugin.getBlocksToUpdate().contains(block.getType())) {
+                                // cptByMaterialToUpdate.put(block.getType(), cptByMaterialToUpdate.get(block.getType()) + 1);
+                                // block.getState().update(true);
+                                // cpt++;
+                                // }
                                 cptTotal++;
                             }
                         }
@@ -114,8 +157,11 @@ public class CleanCommand implements CommandExecutor {
                             "Edit " + cpt + "/" + cptTotal + " blocks. in " + Duration.ofMillis(System.currentTimeMillis() - startTime));
                     sender.sendMessage("By material to remove: " + cptByMaterialToRemove);
                     sender.sendMessage("By material to update: " + cptByMaterialToUpdate);
+                    sender.sendMessage("By material that can't fly: " + cptByMaterialThatCantFly);
                     sender.sendMessage("By boat type: " + boatChestLocation.entrySet().stream()
                             .map(e -> e.getKey() + ": " + e.getValue().size()).collect(java.util.stream.Collectors.joining(", ")));
+                    sender.sendMessage("Block added to avoid flooding: " + cptBlockAddedToAvoidFlooding);
+                    sender.sendMessage("Block removed to avoid flooding: " + cptBlockRemovedToAvoidFlooding);
                     WorldCleanerHPlugin.plugin.saveData(
                             boatChestLocation.entrySet().stream().collect(HashMap::new,
                                     (map, entry) -> map.put(entry.getKey().toString(), entry.getValue()), HashMap::putAll),
@@ -128,6 +174,21 @@ public class CleanCommand implements CommandExecutor {
                 }
             }
         }.runTaskTimer(WorldCleanerHPlugin.plugin, 0, 1);
+    }
+
+    private static boolean isFloodableBlock(Block block) {
+        return WorldCleanerHPlugin.getBlockThatCanBeFlood().contains(block.getType())
+                || (block.getType() == Material.WATER && !isWaterSource(block));
+    }
+    private static boolean isWaterSource(Block block) {
+        return block.getType() == Material.WATER && block.getBlockData() instanceof Levelled levelled && levelled.getLevel() == 0;
+    }
+    private static boolean isFloodingBlock(Block block) {
+        return block.isLiquid() || (block.getBlockData() instanceof Waterlogged wl && wl.isWaterlogged());
+    }
+    private static boolean isUnstableBlock(Block block) {
+        return WorldCleanerHPlugin.getBlocksThatCantFly().contains(block.getType())
+                && (block.getRelative(BlockFace.DOWN).isEmpty() || block.getRelative(BlockFace.DOWN).isLiquid());
     }
 
     private static void cleanEntities(CommandSender sender) {

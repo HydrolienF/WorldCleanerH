@@ -19,6 +19,16 @@ public class WorldCleanerHPlugin extends JavaPlugin {
     private static Collection<Material> blocksToSupport = List.of(Material.SAND, Material.RED_SAND, Material.GRAVEL);
     private static Map<Material, Material> supportBlocks = Map.of(Material.SAND, Material.SANDSTONE, Material.RED_SAND,
             Material.RED_SANDSTONE, Material.GRAVEL, Material.ANDESITE);
+    private static Collection<Material> blockThatCanBeFlood = List.of(Material.AIR, Material.GRASS, Material.TALL_GRASS, Material.FERN,
+            Material.SNOW, Material.DEAD_BUSH, Material.DANDELION, Material.POPPY, Material.BLUE_ORCHID, Material.ALLIUM,
+            Material.AZURE_BLUET, Material.RED_TULIP, Material.ORANGE_TULIP, Material.WHITE_TULIP, Material.PINK_TULIP,
+            Material.OXEYE_DAISY, Material.CORNFLOWER, Material.LILY_OF_THE_VALLEY, Material.WITHER_ROSE, Material.BROWN_MUSHROOM,
+            Material.RED_MUSHROOM, Material.WHEAT, Material.SUGAR_CANE, Material.BAMBOO_SAPLING, Material.BAMBOO, Material.CACTUS,
+            Material.VINE, Material.SUNFLOWER, Material.LILAC, Material.ROSE_BUSH, Material.PEONY, Material.POTATOES, Material.CARROTS,
+            Material.BEETROOTS);
+    private static Collection<Material> blocksThatCantFly = blockThatCanBeFlood.stream().filter(material -> material != Material.AIR)
+            .toList();
+
     public static WorldCleanerHPlugin plugin;
     public static final Random random = new Random();
 
@@ -35,6 +45,8 @@ public class WorldCleanerHPlugin extends JavaPlugin {
     public static Collection<Material> getBlocksToUpdate() { return blocksToUpdate; }
     public static Collection<Material> getBlocksToSupport() { return blocksToSupport; }
     public static Material getSupportBlock(Material block) { return supportBlocks.get(block); }
+    public static Collection<Material> getBlocksThatCantFly() { return blocksThatCantFly; }
+    public static Collection<Material> getBlockThatCanBeFlood() { return blockThatCanBeFlood; }
 
 
     public boolean saveData(Map dataToSave, String name) {
