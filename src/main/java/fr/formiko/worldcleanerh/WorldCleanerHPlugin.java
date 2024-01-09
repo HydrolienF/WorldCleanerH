@@ -26,8 +26,8 @@ public class WorldCleanerHPlugin extends JavaPlugin {
             Material.RED_MUSHROOM, Material.WHEAT, Material.SUGAR_CANE, Material.BAMBOO_SAPLING, Material.BAMBOO, Material.CACTUS,
             Material.VINE, Material.SUNFLOWER, Material.LILAC, Material.ROSE_BUSH, Material.PEONY, Material.POTATOES, Material.CARROTS,
             Material.BEETROOTS);
-    private static Collection<Material> blocksThatCantFly = blockThatCanBeFlood.stream().filter(material -> material != Material.AIR)
-            .toList();
+    private static Collection<Material> blocksThatCantFly = blockThatCanBeFlood.stream()
+            .filter(material -> material != Material.AIR && material != Material.VINE).toList();
 
     public static WorldCleanerHPlugin plugin;
     public static final Random random = new Random();
