@@ -17,7 +17,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.command.Command;
@@ -75,9 +74,7 @@ public class CleanCommand implements CommandExecutor {
                     Chunk chunk = WorldSelectorHPlugin.getSelector().nextChunk();
                     for (int x = 0; x < 16; x++) {
                         for (int z = 0; z < 16; z++) {
-                            int maxY = chunk.getWorld().getHighestBlockYAt(x, z);
-                            // int maxY = 320;
-                            for (int y = -64; y < maxY; y++) {
+                            for (int y = -64; y < 320; y++) {
                                 block = chunk.getBlock(x, y, z);
 
                                 // Block block = WorldSelectorHPlugin.getSelector().nextBlock();
@@ -85,11 +82,11 @@ public class CleanCommand implements CommandExecutor {
                                     cptByMaterialToRemove.put(block.getType(), cptByMaterialToRemove.get(block.getType()) + 1);
                                     block.setType(Material.AIR);
                                     cpt++;
-                                } else if (block.getState() instanceof Chest chest) {
-                                    BoatType boatType = BoatType.randomBoatType();
-                                    boatChestLocation.get(boatType).add(block.getX() + " " + block.getY() + " " + block.getZ());
-                                    chest.getBlockInventory().setContents(generateBoatChestInventory(boatType));
-                                    cpt++;
+                                    // } else if (block.getState() instanceof Chest chest) {
+                                    // BoatType boatType = BoatType.randomBoatType();
+                                    // boatChestLocation.get(boatType).add(block.getX() + " " + block.getY() + " " + block.getZ());
+                                    // chest.getBlockInventory().setContents(generateBoatChestInventory(boatType));
+                                    // cpt++;
                                 } else if (WorldCleanerHPlugin.getBlocksToSupport().contains(block.getType())
                                         && block.getRelative(BlockFace.DOWN).getType() == Material.AIR) { // no floating block
                                     block.getRelative(BlockFace.DOWN).setType(WorldCleanerHPlugin.getSupportBlock(block.getType()));
@@ -99,17 +96,17 @@ public class CleanCommand implements CommandExecutor {
                                     block.setType(Material.AIR);
                                     cpt++;
                                     // If it's a water source block, check if it have some neighbor that can be flooded.
-                                } else if (block.getY() >= 60 && isFloodingBlock(block)) {
-                                    containsWaterSource();
+                                    // } else if (block.getY() >= 60 && isFloodingBlock(block)) {
+                                    // preventFlooding();
                                 }
                                 // // if is a wheat farm, replace by grass at 90% chance. // COMMENT TO RUN ONCE ONLY
-                                // else if (block.getType() == Material.WHEAT && random.nextDouble() < 0.90) {
-                                // // block.setType(Material.GRASS_BLOCK);
-                                // block.setType(Material.AIR);
-                                // block.getRelative(BlockFace.DOWN).setType(Material.GRASS_BLOCK);
-                                // cptWheatFarmToGrass++;
-                                // cpt++;
-                                // }
+                                else if (block.getType() == Material.WHEAT && random.nextDouble() < 0.90) {
+                                    // block.setType(Material.GRASS_BLOCK);
+                                    block.setType(Material.AIR);
+                                    block.getRelative(BlockFace.DOWN).setType(Material.GRASS_BLOCK);
+                                    cptWheatFarmToGrass++;
+                                    cpt++;
+                                }
                                 // if it is a snow block over y = 200, replace by powder snow
                                 else if (block.getType() == Material.POWDER_SNOW) { // to avoid issue when running multiple time.
                                     block.setType(Material.SNOW_BLOCK);
@@ -142,7 +139,7 @@ public class CleanCommand implements CommandExecutor {
             }
 
             // sub function
-            private void containsWaterSource() {
+            private void preventFlooding() {
                 // Remove lonely water source block that will flood
                 int cptWater = 0;
                 int cptAir = 0;
