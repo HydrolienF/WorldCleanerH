@@ -13,14 +13,15 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class WorldCleanerHPlugin extends JavaPlugin {
-    private static Collection<EntityType> entitiesToRemove = List.of(EntityType.DROPPED_ITEM, EntityType.VILLAGER);
+    private static Collection<EntityType> entitiesToRemove = List.of(EntityType.DROPPED_ITEM, EntityType.VILLAGER, EntityType.LLAMA,
+            EntityType.PANDA, EntityType.PARROT);
     private static Collection<Material> blocksToRemove = List.of(Material.SPAWNER, Material.RAIL);
     private static Collection<Material> blocksToUpdate = List.of(Material.WATER, Material.LAVA);
     private static Collection<Material> blocksToSupport = List.of(Material.SAND, Material.RED_SAND, Material.GRAVEL);
     private static Map<Material, Material> supportBlocks = Map.of(Material.SAND, Material.SANDSTONE, Material.RED_SAND,
             Material.RED_SANDSTONE, Material.GRAVEL, Material.ANDESITE);
-    private static Collection<Material> blockThatCanBeFlood = List.of(Material.AIR, Material.GRASS, Material.TALL_GRASS, Material.FERN,
-            Material.SNOW, Material.DEAD_BUSH, Material.DANDELION, Material.POPPY, Material.BLUE_ORCHID, Material.ALLIUM,
+    private static Collection<Material> blockThatCanBeFlood = List.of(Material.AIR, Material.SHORT_GRASS, Material.TALL_GRASS,
+            Material.FERN, Material.SNOW, Material.DEAD_BUSH, Material.DANDELION, Material.POPPY, Material.BLUE_ORCHID, Material.ALLIUM,
             Material.AZURE_BLUET, Material.RED_TULIP, Material.ORANGE_TULIP, Material.WHITE_TULIP, Material.PINK_TULIP,
             Material.OXEYE_DAISY, Material.CORNFLOWER, Material.LILY_OF_THE_VALLEY, Material.WITHER_ROSE, Material.BROWN_MUSHROOM,
             Material.RED_MUSHROOM, Material.WHEAT, Material.SUGAR_CANE, Material.BAMBOO_SAPLING, Material.BAMBOO, Material.CACTUS,
