@@ -200,8 +200,10 @@ public class CleanCommand implements CommandExecutor {
                         boatChestLocation.entrySet().stream().collect(HashMap::new,
                                 (map, entry) -> map.put(entry.getKey().toString(), entry.getValue()), HashMap::putAll),
                         "boatChestLocation");
-                WorldCleanerHPlugin.plugin.saveData(cptAllBlocks.entrySet().stream().collect(HashMap::new,
-                        (map, entry) -> map.put(entry.getKey().toString(), entry.getValue()), HashMap::putAll), "allBlocks");
+                WorldCleanerHPlugin.plugin.saveData(
+                        cptAllBlocks.entrySet().stream().sorted(Map.Entry.comparingByValue((o1, o2) -> Long.compare(o2, o1))).collect(
+                                HashMap::new, (map, entry) -> map.put(entry.getKey().toString(), entry.getValue()), HashMap::putAll),
+                        "allBlocks");
                 cancel();
                 if (runCleanEntities) {
                     WorldSelectorHPlugin.resetSelector();
