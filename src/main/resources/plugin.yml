@@ -1,10 +1,10 @@
-name: WorldCleanerH
-version: 1.4.0
-main: fr.formiko.worldcleanerh.WorldCleanerHPlugin
-description: Select part of the world.
+name: $name
+version: $version
+main: $group.${name}Plugin
+description: $description
 author: Hydrolien
 website: https://github.com/HydrolienF/WorldCleanerH
-api-version: '1.20'
+api-version: "$apiVersion"
 commands:
   clean:
     description: Clean item or block in a selected area.

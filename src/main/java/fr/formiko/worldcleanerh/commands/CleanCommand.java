@@ -292,6 +292,11 @@ public class CleanCommand implements CommandExecutor {
         long timeForFullProgressLeft = timeForFullProgress - (System.currentTimeMillis() - startTime);
         sender.sendMessage("Progress: " + cpt + "   " + progress * 100 + "% ETA: " + Duration.ofMillis(timeForFullProgressLeft));
     }
+    // private static String ramUsedPercentage() {
+    // return "RAM use: "
+    // + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (Runtime.getRuntime().totalMemory() * 100D)
+    // + "%";
+    // }
 
     private static ItemStack @NotNull [] generateBoatChestInventory(BoatType boatType) {
         ItemStack[] items = new ItemStack[27];
