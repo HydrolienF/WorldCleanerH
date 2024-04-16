@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -202,7 +203,7 @@ public class CleanCommand implements CommandExecutor {
                         "boatChestLocation");
                 WorldCleanerHPlugin.plugin.saveData(
                         cptAllBlocks.entrySet().stream().sorted(Map.Entry.comparingByValue((o1, o2) -> Long.compare(o2, o1))).collect(
-                                HashMap::new, (map, entry) -> map.put(entry.getKey().toString(), entry.getValue()), HashMap::putAll),
+                                TreeMap::new, (map, entry) -> map.put(entry.getKey().toString(), entry.getValue()), TreeMap::putAll),
                         "allBlocks");
                 cancel();
                 if (runCleanEntities) {
