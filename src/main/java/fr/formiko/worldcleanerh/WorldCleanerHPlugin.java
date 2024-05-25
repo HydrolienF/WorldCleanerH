@@ -15,7 +15,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class WorldCleanerHPlugin extends JavaPlugin {
     private static Collection<EntityType> entitiesToRemove = List.of(EntityType.DROPPED_ITEM, EntityType.VILLAGER, EntityType.LLAMA,
             EntityType.PANDA, EntityType.PARROT);
-    private static Collection<Material> blocksToRemove = List.of(Material.SPAWNER, Material.RAIL);
+    private static Collection<Material> blocksToRemove = List.of(Material.SPAWNER, Material.RAIL, Material.SUSPICIOUS_GRAVEL,
+            Material.SUSPICIOUS_SAND);
     private static Collection<Material> blocksToUpdate = List.of(Material.WATER, Material.LAVA);
     private static Collection<Material> blocksToSupport = List.of(Material.SAND, Material.RED_SAND, Material.GRAVEL);
     private static Map<Material, Material> supportBlocks = Map.of(Material.SAND, Material.SANDSTONE, Material.RED_SAND,
