@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "fr.formiko.worldcleanerh"
-version = "1.5.4"
+version = "1.5.5"
 description = "Clean part of the world."
 
 
@@ -15,21 +15,16 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     compileOnly("com.github.HydrolienF:WorldSelectorH:1.4.1")
 }
 
 
 tasks {
     compileJava {
-        options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
-        options.release.set(17) // See https://openjdk.java.net/jeps/247 for more information.
-    }
-    javadoc {
-        options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
+        options.release.set(21)
     }
     processResources {
-        filteringCharset = Charsets.UTF_8.name() // We want UTF-8 for everything
         val props = mapOf(
             "name" to project.name,
             "version" to project.version,

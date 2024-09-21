@@ -13,8 +13,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class WorldCleanerHPlugin extends JavaPlugin {
-    private static Collection<EntityType> entitiesToRemove = List.of(EntityType.DROPPED_ITEM, EntityType.VILLAGER, EntityType.LLAMA,
-            EntityType.PANDA, EntityType.PARROT);
+    private static Collection<EntityType> entitiesToRemove = List.of(EntityType.ITEM, EntityType.VILLAGER, EntityType.LLAMA,
+            EntityType.PANDA); // There should be no villager, llama or panda anyways.
     private static Collection<Material> blocksToRemove = List.of(Material.SPAWNER, Material.RAIL, Material.SUSPICIOUS_GRAVEL,
             Material.SUSPICIOUS_SAND);
     private static Collection<Material> blocksToUpdate = List.of(Material.WATER, Material.LAVA);
@@ -52,7 +52,7 @@ public class WorldCleanerHPlugin extends JavaPlugin {
 
 
     public boolean saveData(Map dataToSave, String name) {
-        File dataFile = new File("plugins/WorldCleanerH/" + name + ".yml");
+        File dataFile = new File(getDataFolder(), name + ".yml");
         File parentFile = dataFile.getParentFile();
         parentFile.mkdirs();
         YamlConfiguration data = YamlConfiguration.loadConfiguration(dataFile);

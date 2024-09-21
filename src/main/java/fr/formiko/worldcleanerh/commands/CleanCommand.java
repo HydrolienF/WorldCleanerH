@@ -18,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.command.Command;
@@ -83,11 +84,11 @@ public class CleanCommand implements CommandExecutor {
                                     cptByMaterialToRemove.put(block.getType(), cptByMaterialToRemove.get(block.getType()) + 1);
                                     block.setType(Material.AIR);
                                     cpt++;
-                                    // } else if (block.getState() instanceof Chest chest) {
-                                    // BoatType boatType = BoatType.randomBoatType();
-                                    // boatChestLocation.get(boatType).add(block.getX() + " " + block.getY() + " " + block.getZ());
-                                    // chest.getBlockInventory().setContents(generateBoatChestInventory(boatType));
-                                    // cpt++;
+                                } else if (block.getState() instanceof Chest chest) {
+                                    BoatType boatType = BoatType.randomBoatType();
+                                    boatChestLocation.get(boatType).add(block.getX() + " " + block.getY() + " " + block.getZ());
+                                    chest.getBlockInventory().setContents(generateBoatChestInventory(boatType));
+                                    cpt++;
                                 } else if (WorldCleanerHPlugin.getBlocksToSupport().contains(block.getType())
                                         && block.getRelative(BlockFace.DOWN).getType() == Material.AIR) { // no floating block
                                     block.getRelative(BlockFace.DOWN).setType(WorldCleanerHPlugin.getSupportBlock(block.getType()));
@@ -99,23 +100,16 @@ public class CleanCommand implements CommandExecutor {
                                     // If it's a water source block, check if it have some neighbor that can be flooded.
                                     // } else if (block.getY() >= 60 && isFloodingBlock(block)) {
                                     // preventFlooding();
-                                }
-                                // // if is a wheat farm, replace by grass at 90% chance. // COMMENT TO RUN ONCE ONLY
-                                else if (block.getType() == Material.WHEAT && random.nextDouble() < 0.90) {
-                                    // block.setType(Material.GRASS_BLOCK);
-                                    block.setType(Material.AIR);
-                                    block.getRelative(BlockFace.DOWN).setType(Material.GRASS_BLOCK);
-                                    cptWheatFarmToGrass++;
-                                    cpt++;
-                                }
-                                // if it is a snow block over y = 200, replace by powder snow
-                                else if (block.getType() == Material.POWDER_SNOW) { // to avoid issue when running multiple time.
-                                    block.setType(Material.SNOW_BLOCK);
-                                } else if (block.getType() == Material.SNOW_BLOCK
-                                        && ((block.getY() > 200 && random.nextDouble() < 0.90) || random.nextDouble() < 0.01)) {
-                                    block.setType(Material.POWDER_SNOW);
-                                    cptPowerSnow++;
-                                    cpt++;
+                                    // }
+                                    // // if it is a snow block over y = 200, replace by powder snow
+                                    // else if (block.getType() == Material.POWDER_SNOW) { // to avoid issue when running multiple time.
+                                    // block.setType(Material.SNOW_BLOCK);
+                                    // TODO make a powder snow patch for some biome instead of replacing snow block.
+                                    // } else if (block.getType() == Material.SNOW_BLOCK
+                                    // && ((block.getY() > 200 && random.nextDouble() < 0.90) || random.nextDouble() < 0.01)) {
+                                    // block.setType(Material.POWDER_SNOW);
+                                    // cptPowerSnow++;
+                                    // cpt++;
                                 }
 
                                 // Not working.
@@ -251,7 +245,7 @@ public class CleanCommand implements CommandExecutor {
                             entity.remove();
                             cpt++;
                             cptByEntity.put(entity.getType(), cptByEntity.get(entity.getType()) + 1);
-                        } else if (entity instanceof StorageMinecart container && entity.getType() == EntityType.MINECART_CHEST) {
+                        } else if (entity instanceof StorageMinecart container && entity.getType() == EntityType.CHEST_MINECART) {
                             // remove minecart chest without droping items
                             container.getInventory().clear();
                             entity.remove();
