@@ -10,13 +10,15 @@ public enum BoatType {
         TOOL(new ItemStack(Material.IRON_PICKAXE), new ItemStack(Material.IRON_AXE), new ItemStack(Material.IRON_SHOVEL),
                 new ItemStack(Material.IRON_HOE)),
         EXOTIC(new ItemStack(Material.BAMBOO, 20), new ItemStack(Material.COCOA_BEANS, 20), new ItemStack(Material.SUGAR_CANE, 20),
-                new ItemStack(Material.CACTUS, 20), new ItemStack(Material.CHERRY_SAPLING, 10), new ItemStack(Material.MANGROVE_PROPAGULE, 10)),
+                new ItemStack(Material.CACTUS, 20), new ItemStack(Material.CHERRY_SAPLING, 10), new ItemStack(Material.MANGROVE_PROPAGULE, 10),
+                new ItemStack(Material.PALE_OAK_SAPLING, 10)),
         RICH(new ItemStack(Material.CANDLE, 20), new ItemStack(Material.GOLD_INGOT, 10), new ItemStack(Material.GOLD_BLOCK, 3),
                 new ItemStack(Material.DIAMOND, 9)),
         FISHER(new ItemStack(Material.SALMON, 26), new ItemStack(Material.COD, 26), new ItemStack(Material.FISHING_ROD)),
         WOOD1(new ItemStack(Material.OAK_LOG, 32), new ItemStack(Material.SPRUCE_LOG, 32), new ItemStack(Material.BIRCH_LOG, 32),
                 new ItemStack(Material.DARK_OAK_LOG, 32), new ItemStack(Material.CHERRY_LOG, 32)),
-        WOOD2(new ItemStack(Material.JUNGLE_LOG, 32), new ItemStack(Material.ACACIA_LOG, 32), new ItemStack(Material.MANGROVE_LOG, 32)),
+        WOOD2(new ItemStack(Material.JUNGLE_LOG, 32), new ItemStack(Material.ACACIA_LOG, 32), new ItemStack(Material.MANGROVE_LOG, 32),
+                new ItemStack(Material.PALE_OAK_LOG, 32)),
         WOOL(new ItemStack(Material.WHITE_WOOL, 10), new ItemStack(Material.WHITE_CARPET, 2), new ItemStack(Material.WHITE_BED, 2));
         // MAGIC(new ItemStack(Material.BOOK, 64), enchantedBook(Enchantment.MENDING, 1), enchantedBook(Enchantment.LOOT_BONUS_BLOCKS, 3));
         // TODO add WEAPON.

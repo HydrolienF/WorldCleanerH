@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "fr.formiko.worldcleanerh"
-version = "1.5.5"
+version = "1.6.0"
 description = "Clean part of the world."
 
 
@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.github.HydrolienF:WorldSelectorH:1.4.1")
 }
 
@@ -29,7 +29,7 @@ tasks {
             "name" to project.name,
             "version" to project.version,
             "description" to project.description,
-            "apiVersion" to "1.20",
+            "apiVersion" to "1.21.4",
             "group" to project.group
         )
         inputs.properties(props)
